@@ -1,5 +1,6 @@
 <template>
-  <div v-if="selectedNode" class="config-panel bg-white border-l border-gray-200 p-6 overflow-y-auto">
+  <template v-if="shouldShowPanel">
+    <div v-if="selectedNode" class="config-panel bg-white border-l border-gray-200 p-6 overflow-y-auto">
     <div class="mb-6">
       <h3 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
         <span class="text-2xl">{{ nodeDefinition?.icon }}</span>
@@ -156,16 +157,17 @@
     </form>
   </div>
 
-  <div v-else class="config-panel bg-gray-50 border-l border-gray-200 flex items-center justify-center">
-    <div class="text-center text-gray-400">
-      <p class="text-lg">No node selected</p>
-      <p class="text-sm mt-2">Select a node to configure</p>
+    <div v-else class="config-panel bg-gray-50 border-l border-gray-200 flex items-center justify-center">
+      <div class="text-center text-gray-400">
+        <p class="text-lg">No node selected</p>
+        <p class="text-sm mt-2">Select a node to configure</p>
+      </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useWorkflowStore } from '../../stores/workflowStore'
 import { useToastStore } from '../../stores/toastStore'
 import { useConfirmStore } from '../../stores/confirmStore'
@@ -178,6 +180,7 @@ const confirmStore = useConfirmStore()
 
 const formData = ref<Record<string, any>>({})
 const errors = ref<Record<string, string>>({})
+const isCompact = ref(false)
 
 const selectedNode = computed(() => workflowStore.selectedNode)
 const nodeDefinition = computed(() => 
@@ -188,6 +191,21 @@ const isValid = computed(() => {
   if (!nodeDefinition.value) return false
   const result = validateNodeConfig(nodeDefinition.value.fields, formData.value)
   return result.valid
+})
+
+const shouldShowPanel = computed(() => !isCompact.value || !!selectedNode.value)
+
+function updateCompactState() {
+  isCompact.value = window.innerWidth < 1000
+}
+
+onMounted(() => {
+  updateCompactState()
+  window.addEventListener('resize', updateCompactState)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateCompactState)
 })
 
 watch(selectedNode, (node) => {

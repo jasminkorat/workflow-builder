@@ -13,6 +13,7 @@
           :key="node.type"
           :draggable="true"
           @dragstart="onDragStart($event, node)"
+          @click="onNodeClick(node)"
           class="node-item p-3 bg-gray-50 border border-gray-200 rounded-lg cursor-move hover:bg-gray-100 hover:border-gray-300 transition-all"
           :data-testid="`palette-node-${node.type}`"
         >
@@ -36,6 +37,7 @@ const categories = ['trigger', 'action', 'logic']
 
 const emit = defineEmits<{
   dragStart: [event: DragEvent, nodeType: string]
+  selectNodeType: [nodeType: string]
 }>()
 
 function onDragStart(event: DragEvent, node: any) {
@@ -45,11 +47,16 @@ function onDragStart(event: DragEvent, node: any) {
   event.dataTransfer.setData('application/nodeType', node.type)
   emit('dragStart', event, node.type)
 }
+
+function onNodeClick(node: any) {
+  if (window.innerWidth >= 1000) return
+  emit('selectNodeType', node.type)
+}
 </script>
 
 <style scoped>
 .node-palette {
-  width: 280px;
+  width: 30vh;
   height: 100%;
 }
 

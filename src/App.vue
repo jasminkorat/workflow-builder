@@ -13,10 +13,10 @@
     <ConditionDecisionModal />
     
     <div class="main-content">
-      <NodePalette />
+      <NodePalette @select-node-type="handlePaletteSelect" />
       
       <div class="canvas-wrapper">
-        <WorkflowCanvas />
+        <WorkflowCanvas ref="workflowCanvasRef" />
         <ExecutionPanel />
       </div>
       
@@ -51,6 +51,7 @@ const confirmStore = useConfirmStore()
 const executionStore = useExecutionStore()
 const route = useRoute()
 const showRotateOverlay = ref(false)
+const workflowCanvasRef = ref<InstanceType<typeof WorkflowCanvas> | null>(null)
 
 // Load saved workflow on mount
 onMounted(() => {
@@ -111,9 +112,15 @@ function loadSampleById(id: string) {
 }
 
 function updateRotateOverlay() {
-  const isSmallScreen = window.matchMedia('(max-width: 1024px)').matches
-  const isPortrait = window.matchMedia('(orientation: portrait)').matches
+  const width = window.innerWidth || document.documentElement.clientWidth
+  const height = window.innerHeight || document.documentElement.clientHeight
+  const isSmallScreen = width <= 1024
+  const isPortrait = height >= width
   showRotateOverlay.value = isSmallScreen && isPortrait
+}
+
+function handlePaletteSelect(nodeType: string) {
+  workflowCanvasRef.value?.addNodeAtCenter(nodeType)
 }
 
 function handleKeyboard(event: KeyboardEvent) {

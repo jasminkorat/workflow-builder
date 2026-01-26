@@ -1,5 +1,5 @@
 <template>
-  <div class="workflow-canvas-container" @drop="onDrop" @dragover.prevent>
+  <div ref="canvasContainer" class="workflow-canvas-container" @drop="onDrop" @dragover.prevent>
     <VueFlow
       v-model:nodes="nodes"
       v-model:edges="edges"
@@ -83,6 +83,7 @@ const toastStore = useToastStore()
 const confirmStore = useConfirmStore()
 const vueFlow = useVueFlow()
 const { screenToFlowCoordinate } = vueFlow
+const canvasContainer = ref<HTMLDivElement | null>(null)
 const selectedEdgeId = ref<string | null>(null)
 const edgeMenu = ref({ x: 0, y: 0, visible: false })
 
@@ -113,6 +114,31 @@ function onDrop(event: DragEvent) {
 
   const nodeDef = getNodeDefinition(nodeType)
   if (!nodeDef) return
+
+  const newNode: WorkflowNode = {
+    id: `node-${Date.now()}`,
+    type: nodeType as any,
+    position,
+    data: {
+      label: nodeDef.label,
+      config: { ...nodeDef.defaultConfig }
+    }
+  }
+
+  workflowStore.addNode(newNode)
+}
+
+function addNodeAtCenter(nodeType: string) {
+  const nodeDef = getNodeDefinition(nodeType)
+  if (!nodeDef) return
+
+  const rect = canvasContainer.value?.getBoundingClientRect()
+  if (!rect) return
+
+  const position = screenToFlowCoordinate({
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2
+  })
 
   const newNode: WorkflowNode = {
     id: `node-${Date.now()}`,
@@ -285,6 +311,8 @@ function centerOnNode(nodeId: string) {
     setCenter(centerX, centerY, { zoom, duration: 300 })
   }
 }
+
+defineExpose({ addNodeAtCenter })
 </script>
 
 <style>
