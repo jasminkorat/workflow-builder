@@ -1,0 +1,324 @@
+{
+  "version": "1.0.0",
+  "name": "Abandoned Cart Recovery",
+  "nodes": [
+    {
+      "id": "trigger-2",
+      "type": "webhook-trigger",
+      "position": { "x": 100, "y": 150 },
+      "data": {
+        "label": "Cart Event Webhook",
+        "config": {
+          "webhookUrl": "https://shop.example.com/webhooks/cart-abandoned",
+          "method": "POST"
+        }
+      }
+    },
+    {
+      "id": "condition-1",
+      "type": "condition",
+      "position": { "x": 400, "y": 150 },
+      "data": {
+        "label": "Item In Stock?",
+        "config": {
+          "condition": "item.inStock == true",
+          "leftValue": "item.inStock",
+          "operator": "==",
+          "rightValue": "true"
+        }
+      }
+    },
+    {
+      "id": "email-1",
+      "type": "email-action",
+      "position": { "x": 700, "y": 80 },
+      "data": {
+        "label": "Email #1 Reminder",
+        "config": {
+          "to": "customer@example.com",
+          "subject": "You left items in your cart!",
+          "body": "Don't forget about your items! Complete your purchase now and get 10% off."
+        }
+      }
+    },
+    {
+      "id": "delay-1",
+      "type": "delay",
+      "position": { "x": 1000, "y": 80 },
+      "data": {
+        "label": "Wait 2 Hours",
+        "config": {
+          "duration": 2,
+          "unit": "hours"
+        }
+      }
+    },
+    {
+      "id": "condition-2",
+      "type": "condition",
+      "position": { "x": 1300, "y": 80 },
+      "data": {
+        "label": "Still Not Purchased?",
+        "config": {
+          "condition": "order_status != completed",
+          "leftValue": "order_status",
+          "operator": "!=",
+          "rightValue": "completed"
+        }
+      }
+    },
+    {
+      "id": "sms-1",
+      "type": "sms-action",
+      "position": { "x": 1600, "y": 20 },
+      "data": {
+        "label": "SMS Nudge",
+        "config": {
+          "phoneNumber": "+1234567890",
+          "message": "You left items in your cart. Complete your purchase now and save!"
+        }
+      }
+    },
+    {
+      "id": "http-1",
+      "type": "http-action",
+      "position": { "x": 1850, "y": 20 },
+      "data": {
+        "label": "Create Temp Discount & Hold",
+        "config": {
+          "url": "https://api.example.com/discounts/hold",
+          "method": "POST",
+          "headers": "{\"Content-Type\": \"application/json\"}",
+          "body": "{\"campaign\": \"cart_recovery\", \"hold\": true}"
+        }
+      }
+    },
+    {
+      "id": "email-2",
+      "type": "email-action",
+      "position": { "x": 2100, "y": 20 },
+      "data": {
+        "label": "Email #2 with Code",
+        "config": {
+          "to": "customer@example.com",
+          "subject": "Your exclusive discount code",
+          "body": "Here is your limited-time code: SAVE20. Complete your purchase now!"
+        }
+      }
+    },
+    {
+      "id": "delay-2",
+      "type": "delay",
+      "position": { "x": 2350, "y": 20 },
+      "data": {
+        "label": "Wait 24 Hours",
+        "config": {
+          "duration": 24,
+          "unit": "hours"
+        }
+      }
+    },
+    {
+      "id": "condition-3",
+      "type": "condition",
+      "position": { "x": 2600, "y": 20 },
+      "data": {
+        "label": "Purchased?",
+        "config": {
+          "condition": "order_status == completed",
+          "leftValue": "order_status",
+          "operator": "==",
+          "rightValue": "completed"
+        }
+      }
+    },
+    {
+      "id": "http-2",
+      "type": "http-action",
+      "position": { "x": 2850, "y": -40 },
+      "data": {
+        "label": "Release Hold",
+        "config": {
+          "url": "https://api.example.com/discounts/release",
+          "method": "POST",
+          "headers": "{\"Content-Type\": \"application/json\"}",
+          "body": "{\"campaign\": \"cart_recovery\", \"release\": true}"
+        }
+      }
+    },
+    {
+      "id": "email-3",
+      "type": "email-action",
+      "position": { "x": 3100, "y": -40 },
+      "data": {
+        "label": "Email: Thanks for your order",
+        "config": {
+          "to": "customer@example.com",
+          "subject": "Thanks for your order",
+          "body": "Thanks for your order! We appreciate your business."
+        }
+      }
+    },
+    {
+      "id": "http-3",
+      "type": "http-action",
+      "position": { "x": 3350, "y": -40 },
+      "data": {
+        "label": "Log Analytics (Success)",
+        "config": {
+          "url": "https://api.example.com/analytics/log",
+          "method": "POST",
+          "headers": "{\"Content-Type\": \"application/json\"}",
+          "body": "{\"event\": \"cart_recovery_success\"}"
+        }
+      }
+    },
+    {
+      "id": "http-4",
+      "type": "http-action",
+      "position": { "x": 2850, "y": 120 },
+      "data": {
+        "label": "Cancel Hold",
+        "config": {
+          "url": "https://api.example.com/discounts/cancel",
+          "method": "POST",
+          "headers": "{\"Content-Type\": \"application/json\"}",
+          "body": "{\"campaign\": \"cart_recovery\", \"cancel\": true}"
+        }
+      }
+    },
+    {
+      "id": "email-4",
+      "type": "email-action",
+      "position": { "x": 3100, "y": 120 },
+      "data": {
+        "label": "Email: Last-chance offer",
+        "config": {
+          "to": "customer@example.com",
+          "subject": "Last-chance offer",
+          "body": "This is your last chance to save on your cart. Complete your order now!"
+        }
+      }
+    },
+    {
+      "id": "http-5",
+      "type": "http-action",
+      "position": { "x": 3350, "y": 120 },
+      "data": {
+        "label": "Log Analytics (Failure)",
+        "config": {
+          "url": "https://api.example.com/analytics/log",
+          "method": "POST",
+          "headers": "{\"Content-Type\": \"application/json\"}",
+          "body": "{\"event\": \"cart_recovery_failed\"}"
+        }
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e1", "source": "trigger-2", "target": "condition-1" },
+    { "id": "e2", "source": "condition-1", "target": "email-1", "type": "true" },
+    { "id": "e3", "source": "email-1", "target": "delay-1" },
+    { "id": "e4", "source": "delay-1", "target": "condition-2" },
+    { "id": "e5", "source": "condition-2", "target": "sms-1", "type": "true" },
+    { "id": "e6", "source": "sms-1", "target": "http-1" },
+    { "id": "e7", "source": "http-1", "target": "email-2" },
+    { "id": "e8", "source": "email-2", "target": "delay-2" },
+    { "id": "e9", "source": "delay-2", "target": "condition-3" },
+    { "id": "e10", "source": "condition-3", "target": "http-2", "type": "true" },
+    { "id": "e11", "source": "http-2", "target": "email-3" },
+    { "id": "e12", "source": "email-3", "target": "http-3" },
+    { "id": "e13", "source": "condition-3", "target": "http-4", "type": "false" },
+    { "id": "e14", "source": "http-4", "target": "email-4" },
+    { "id": "e15", "source": "email-4", "target": "http-5" }
+  ],
+  "nodeConfigs": {
+    "trigger-2": {
+      "webhookUrl": "https://shop.example.com/webhooks/cart-abandoned",
+      "method": "POST"
+    },
+    "condition-1": {
+      "condition": "item.inStock == true",
+      "leftValue": "item.inStock",
+      "operator": "==",
+      "rightValue": "true"
+    },
+    "email-1": {
+      "to": "customer@example.com",
+      "subject": "You left items in your cart!",
+      "body": "Don't forget about your items! Complete your purchase now and get 10% off."
+    },
+    "delay-1": {
+      "duration": 2,
+      "unit": "hours"
+    },
+    "condition-2": {
+      "condition": "order_status != completed",
+      "leftValue": "order_status",
+      "operator": "!=",
+      "rightValue": "completed"
+    },
+    "sms-1": {
+      "phoneNumber": "+1234567890",
+      "message": "You left items in your cart. Complete your purchase now and save!"
+    },
+    "http-1": {
+      "url": "https://api.example.com/discounts/hold",
+      "method": "POST",
+      "headers": "{\"Content-Type\": \"application/json\"}",
+      "body": "{\"campaign\": \"cart_recovery\", \"hold\": true}"
+    },
+    "email-2": {
+      "to": "customer@example.com",
+      "subject": "Your exclusive discount code",
+      "body": "Here is your limited-time code: SAVE20. Complete your purchase now!"
+    },
+    "delay-2": {
+      "duration": 24,
+      "unit": "hours"
+    },
+    "condition-3": {
+      "condition": "order_status == completed",
+      "leftValue": "order_status",
+      "operator": "==",
+      "rightValue": "completed"
+    },
+    "http-2": {
+      "url": "https://api.example.com/discounts/release",
+      "method": "POST",
+      "headers": "{\"Content-Type\": \"application/json\"}",
+      "body": "{\"campaign\": \"cart_recovery\", \"release\": true}"
+    },
+    "email-3": {
+      "to": "customer@example.com",
+      "subject": "Thanks for your order",
+      "body": "Thanks for your order! We appreciate your business."
+    },
+    "http-3": {
+      "url": "https://api.example.com/analytics/log",
+      "method": "POST",
+      "headers": "{\"Content-Type\": \"application/json\"}",
+      "body": "{\"event\": \"cart_recovery_success\"}"
+    },
+    "http-4": {
+      "url": "https://api.example.com/discounts/cancel",
+      "method": "POST",
+      "headers": "{\"Content-Type\": \"application/json\"}",
+      "body": "{\"campaign\": \"cart_recovery\", \"cancel\": true}"
+    },
+    "email-4": {
+      "to": "customer@example.com",
+      "subject": "Last-chance offer",
+      "body": "This is your last chance to save on your cart. Complete your order now!"
+    },
+    "http-5": {
+      "url": "https://api.example.com/analytics/log",
+      "method": "POST",
+      "headers": "{\"Content-Type\": \"application/json\"}",
+      "body": "{\"event\": \"cart_recovery_failed\"}"
+    }
+  },
+  "viewport": { "zoom": 0.7, "x": 0, "y": 0 },
+  "createdAt": 1706184000000,
+  "updatedAt": 1706184000000
+}

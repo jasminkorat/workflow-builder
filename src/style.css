@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-gray-200;
+  }
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+/* Vue Flow custom styles */
+.vue-flow__node {
+  @apply transition-all duration-200;
+}
+
+.vue-flow__node.selected {
+  @apply ring-2 ring-primary-500 ring-offset-2;
+}
+
+.vue-flow__edge-path {
+  @apply stroke-2;
+}
+
+.vue-flow__edge.selected .vue-flow__edge-path {
+  @apply stroke-primary-500;
+}
+
+.vue-flow__handle {
+  @apply w-3 h-3 border-2 bg-white;
+}
+
+.vue-flow__handle-connecting {
+  @apply bg-primary-500;
+}
+
+.vue-flow__handle-valid {
+  @apply bg-green-500;
+}

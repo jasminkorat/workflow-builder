@@ -1,0 +1,141 @@
+{
+  "version": "1.0.0",
+  "name": "New Lead Welcome & Follow-up",
+  "nodes": [
+    {
+      "id": "trigger-1",
+      "type": "webhook-trigger",
+      "position": { "x": 100, "y": 100 },
+      "data": {
+        "label": "New Lead Webhook",
+        "config": {
+          "webhookUrl": "https://api.example.com/leads/new",
+          "method": "POST"
+        }
+      }
+    },
+    {
+      "id": "email-1",
+      "type": "email-action",
+      "position": { "x": 400, "y": 100 },
+      "data": {
+        "label": "Welcome Email",
+        "config": {
+          "to": "lead@example.com",
+          "subject": "Welcome! Thanks for signing up",
+          "body": "Hi there! Welcome to our platform. We're excited to have you on board."
+        }
+      }
+    },
+    {
+      "id": "delay-1",
+      "type": "delay",
+      "position": { "x": 700, "y": 100 },
+      "data": {
+        "label": "Wait 1 Hour",
+        "config": {
+          "duration": 1,
+          "unit": "hours"
+        }
+      }
+    },
+    {
+      "id": "http-1",
+      "type": "http-action",
+      "position": { "x": 1000, "y": 100 },
+      "data": {
+        "label": "Add Lead to CRM",
+        "config": {
+          "url": "https://api.example.com/crm/leads",
+          "method": "POST",
+          "headers": "{\"Content-Type\": \"application/json\"}",
+          "body": "{\"lead\": \"{{lead}}\"}"
+        }
+      }
+    },
+    {
+      "id": "condition-1",
+      "type": "condition",
+      "position": { "x": 1300, "y": 100 },
+      "data": {
+        "label": "CRM Response OK?",
+        "config": {
+          "condition": "response.status == 200",
+          "leftValue": "response.status",
+          "operator": "==",
+          "rightValue": "200"
+        }
+      }
+    },
+    {
+      "id": "sms-1",
+      "type": "sms-action",
+      "position": { "x": 1600, "y": 50 },
+      "data": {
+        "label": "SMS: Success",
+        "config": {
+          "phoneNumber": "+1234567890",
+          "message": "Thanks! Your lead was added to CRM successfully."
+        }
+      }
+    },
+    {
+      "id": "sms-2",
+      "type": "sms-action",
+      "position": { "x": 1600, "y": 250 },
+      "data": {
+        "label": "SMS: Support Alert",
+        "config": {
+          "phoneNumber": "+1234567890",
+          "message": "CRM add failed (status != 200). Please investigate."
+        }
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e1", "source": "trigger-1", "target": "email-1" },
+    { "id": "e2", "source": "email-1", "target": "delay-1" },
+    { "id": "e3", "source": "delay-1", "target": "http-1" },
+    { "id": "e4", "source": "http-1", "target": "condition-1" },
+    { "id": "e5", "source": "condition-1", "target": "sms-1", "type": "true" },
+    { "id": "e6", "source": "condition-1", "target": "sms-2", "type": "false" }
+  ],
+  "nodeConfigs": {
+    "trigger-1": {
+      "webhookUrl": "https://api.example.com/leads/new",
+      "method": "POST"
+    },
+    "email-1": {
+      "to": "lead@example.com",
+      "subject": "Welcome! Thanks for signing up",
+      "body": "Hi there! Welcome to our platform. We're excited to have you on board."
+    },
+    "delay-1": {
+      "duration": 1,
+      "unit": "hours"
+    },
+    "http-1": {
+      "url": "https://api.example.com/crm/leads",
+      "method": "POST",
+      "headers": "{\"Content-Type\": \"application/json\"}",
+      "body": "{\"lead\": \"{{lead}}\"}"
+    },
+    "condition-1": {
+      "condition": "response.status == 200",
+      "leftValue": "response.status",
+      "operator": "==",
+      "rightValue": "200"
+    },
+    "sms-1": {
+      "phoneNumber": "+1234567890",
+      "message": "Thanks! Your lead was added to CRM successfully."
+    },
+    "sms-2": {
+      "phoneNumber": "+1234567890",
+      "message": "CRM add failed (status != 200). Please investigate."
+    }
+  },
+  "viewport": { "zoom": 0.8, "x": 0, "y": 0 },
+  "createdAt": 1706184000000,
+  "updatedAt": 1706184000000
+}
