@@ -83,10 +83,10 @@
         </svg>
       </button>
 
-      <div class="ml-4 px-3 py-1 bg-gray-100 rounded-lg text-sm">
+      <!-- <div class="ml-4 px-3 py-1 bg-gray-100 rounded-lg text-sm">
         <span class="text-gray-600">Nodes:</span>
         <span class="font-semibold ml-1">{{ historyStore.currentNodeCount }}</span>
-      </div>
+      </div> -->
 
       <div
         v-if="!workflowStore.isValidWorkflow"
