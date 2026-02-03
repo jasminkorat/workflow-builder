@@ -11,6 +11,10 @@ export const useHistoryStore = defineStore('history', {
     canRedo: false
   }),
 
+  getters: {
+    currentNodeCount: (state) => state.past.length > 0 ? state.past[state.past.length - 1]!.nodes.length : 0
+  },
+
   actions: {
     saveSnapshot(workflowState: WorkflowState) {
       const snapshot: HistorySnapshot = {

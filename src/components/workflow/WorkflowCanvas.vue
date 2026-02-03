@@ -15,7 +15,7 @@
       @viewport-change="onViewportChange"
       data-testid="workflow-canvas"
     >
-      <Background pattern-color="#e5e7eb" :gap="15" />
+      <Background pattern-color="#000000" :gap="15" />
       <Controls />
       <MiniMap />
 
